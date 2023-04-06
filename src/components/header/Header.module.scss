@@ -1,0 +1,34 @@
+@import 'styles/sass/mixins';
+@import 'styles/sass/variables';
+
+.header {
+  padding: 13px 0px;
+
+  &__navigation {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  &__link {
+    @include main-button;
+  }
+
+  &__logoLink {
+    font-size: 0;
+  }
+
+  &__logo {
+    fill: $color-primary;
+    transition: $basic-transition;
+
+    &:hover {
+      fill: $color-primary-hover;
+    }
+  }
+}
+
+.linkWrapper {
+  display: flex;
+  gap: 10px;
+}

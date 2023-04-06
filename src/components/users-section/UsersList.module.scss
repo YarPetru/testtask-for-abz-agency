@@ -1,0 +1,15 @@
+@import 'styles/sass/variables';
+@import 'styles/sass/mixins';
+
+.usersList {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.users__button {
+  @include main-button;
+  margin-top: 50px;
+}

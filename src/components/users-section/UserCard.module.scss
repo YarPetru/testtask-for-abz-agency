@@ -1,0 +1,30 @@
+@import 'styles/sass/variables';
+
+.cardWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+
+  padding: 20px;
+  width: 328px;
+
+  border-radius: $border-radius-md;
+  background-color: white;
+}
+
+.contactsWrapper {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userDetails {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.userPhoto {
+  border-radius: $border-radius-round;
+}

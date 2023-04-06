@@ -1,0 +1,204 @@
+@import 'styles/sass/mixins';
+@import 'styles/sass/variables';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+
+.fieldsWrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.selectWrapper {
+  margin-top: -7px;
+  align-items: flex-start;
+}
+
+.label {
+  position: absolute;
+  left: 12px;
+  transform: translateY(-50%);
+  display: block;
+  padding: 2px 3px 2px 4px;
+  font-weight: 500;
+  color: $color-font-secondary;
+  background-color: $color-grey-background;
+  overflow: hidden;
+
+  font-size: 12px;
+  line-height: 1.666;
+
+  transition: $basic-transition;
+
+  &__invalid {
+    color: $color-error;
+  }
+}
+
+.field {
+  width: 100%;
+  height: 54px;
+  padding: 14px 16px;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  // outline: none;
+  background-color: transparent;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-sm;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: $color-font-secondary;
+  }
+
+  &:placeholder-shown + .label {
+    opacity: 0;
+    visibility: hidden;
+    font-size: 16px;
+    line-height: 1.625;
+    color: $color-font-secondary;
+    background-color: transparent;
+    transform: translateY(12px);
+  }
+
+  &__invalid {
+    border-color: $color-error;
+  }
+}
+
+.radioBtnsWrapper {
+  margin-top: 11px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 7px;
+
+  & label {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+}
+
+.defaultRadio {
+  position: relative;
+  appearance: none;
+
+  width: 20px;
+  height: 20px;
+
+  border: 1px solid $color-border;
+  border-radius: $border-radius-round;
+
+  &:checked {
+    border-color: $color-secondary;
+    transition: $basic-transition;
+  }
+
+  &:checked::after {
+    width: 10px;
+    height: 10px;
+  }
+
+  &::after {
+    content: '';
+    display: block;
+
+    position: absolute;
+    @include position-centered;
+    border-radius: $border-radius-round;
+
+    width: 0px;
+    height: 0px;
+    background-color: $color-secondary;
+    transition: width 100ms ease, height 100ms ease;
+  }
+}
+
+.submitBtn {
+  @include main-button;
+  align-self: center;
+
+  &:disabled {
+    color: white;
+    background-color: $color-grey-disabled;
+    pointer-events: none;
+  }
+}
+
+.validationError {
+  position: absolute;
+  bottom: -24px;
+  left: 16px;
+
+  color: $color-error;
+  font-size: 12px;
+  line-height: 1.666;
+}
+
+.customFileLoader {
+  display: flex;
+  width: 100%;
+  height: 54px;
+  padding: 14px 0;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+
+  background-color: transparent;
+  border: 1px solid $color-border;
+  border-radius: $border-radius-sm;
+  cursor: pointer;
+
+  &__fakeBtn {
+    position: absolute;
+    padding: 14px 15px;
+    top: 0px;
+    left: 0px;
+    width: 83px;
+    height: 100%;
+    border: 1px solid $color-font-primary;
+    border-top-left-radius: $border-radius-sm;
+    border-bottom-left-radius: $border-radius-sm;
+  }
+
+  &__fakePlaceholder {
+    margin-left: 99px;
+    color: $color-font-secondary;
+  }
+}
+
+// .field[type='file'] {
+// }
+
+// .field[type='file']::file-selector-button {
+//   content: 'upload';
+//   font-family: inherit;
+//   font-weight: inherit;
+//   color: inherit;
+//   position: absolute;
+//   top: 0px;
+//   left: 0px;
+//   width: 83px;
+//   height: 100%;
+
+//   // color: #fff;
+//   cursor: pointer;
+// }
+
+// .field[type='file']::file-selector-button::content {
+// }
+
+// .field[type='file']::file-selector-button:hover {
+// }

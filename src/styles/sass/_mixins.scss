@@ -1,0 +1,19 @@
+@mixin main-button {
+  padding: 4px 22px 4px 23px;
+  min-width: 100px;
+  line-height: inherit;
+
+  border-radius: $border-radius-lg;
+  background-color: $color-primary;
+  transition: $basic-transition;
+
+  &:hover {
+    background-color: $color-primary-hover;
+  }
+}
+
+@mixin position-centered {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
