@@ -5,15 +5,44 @@
   color: white;
   padding-top: 0;
 
-  &__contentWrapper {
+  &__bg {
     margin: 0 auto;
-    padding: 40px 20px 71px 20px;
-    text-align: center;
+    max-width: 1170px;
     background: linear-gradient(0deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
       url('../../images//pexels-alexandr-podvalny-1227513.jpeg');
-    background-size: 1240px;
     background-repeat: no-repeat;
     background-position: bottom;
+
+    @media only screen and (min-width: $bp-small) {
+      background-size: 1240px 845px;
+    }
+
+    @media only screen and (min-width: $bp-medium) {
+      background-size: 2645px 820px;
+    }
+
+    @media only screen and (min-width: $bp-large) {
+      background-size: 3510px 1065px;
+    }
+  }
+
+  &__contentWrapper {
+    margin: 0 auto;
+    text-align: center;
+
+    @media only screen and (min-width: $bp-small) {
+      padding: 40px 0px 71px 0px;
+      max-width: 320px;
+    }
+
+    @media only screen and (min-width: $bp-medium) {
+      padding: 89px 0px 88px;
+      max-width: 380px;
+    }
+
+    @media only screen and (min-width: $bp-large) {
+      padding: 164px 0px 163px;
+    }
   }
 
   &__text {

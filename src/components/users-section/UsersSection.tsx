@@ -5,7 +5,7 @@ import UsersList from './UsersList';
 
 const UsersSection: React.FC = () => {
   return (
-    <section>
+    <section id="users">
       <Container>
         <Heading>Working with GET request</Heading>
         <UsersList />

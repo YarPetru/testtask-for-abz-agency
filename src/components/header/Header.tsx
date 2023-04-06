@@ -17,7 +17,7 @@ const Header: React.FC = () => {
               Users
             </a>
             <a href="#signup" className={s.header__link}>
-              Signup
+              Sign up
             </a>
           </div>
         </nav>

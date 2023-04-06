@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IPositionsRespond, IUsersRespond } from 'types/types';
+import { IPositionsRespond, ITokenRespond, IUsersRespond } from 'types/types';
+import { RootState } from 'store';
 
 const BASE_URL = 'https://frontend-test-assignment-api.abz.agency/api/v1/';
 
@@ -8,8 +9,17 @@ export const usersApi = createApi({
   refetchOnFocus: false,
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
+    prepareHeaders: (headers, { getState }) => {
+      const data = (getState() as RootState).usersApi.queries.getToken
+        ?.data as ITokenRespond;
+
+      if (data.token) {
+        headers.set('Authorization', `Bearer ${data.token}`);
+      }
+      return headers;
+    },
   }),
-  tagTypes: ['users', 'positions'],
+  tagTypes: ['users', 'positions', 'token'],
   endpoints: builder => ({
     getPositions: builder.query<IPositionsRespond, void>({
       query: () => ({
@@ -36,7 +46,15 @@ export const usersApi = createApi({
       },
       // providesTags: ['users'],
     }),
+    getToken: builder.query<ITokenRespond, void>({
+      query: () => ({
+        url: `token`,
+        method: 'GET',
+      }),
+      providesTags: ['token'],
+    }),
   }),
 });
 
-export const { useGetPositionsQuery, useGetUsersQuery } = usersApi;
+export const { useGetPositionsQuery, useGetUsersQuery, useGetTokenQuery } =
+  usersApi;

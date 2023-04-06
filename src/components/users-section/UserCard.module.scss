@@ -11,6 +11,18 @@
 
   border-radius: $border-radius-md;
   background-color: white;
+
+  @media only screen and (min-width: $bp-medium) {
+    width: 344px;
+  }
+
+  @media only screen and (min-width: $bp-large) {
+    width: 282px;
+  }
+
+  @media only screen and (min-width: $bp-largest) {
+    width: 370px;
+  }
 }
 
 .contactsWrapper {

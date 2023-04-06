@@ -7,7 +7,7 @@ import SuccessMessage from './SuccessMessage';
 
 const RegisterSection: React.FC = () => {
   return (
-    <section className={s.registerSection}>
+    <section id="signup" className={s.registerSection}>
       <Container>
         <RegisterForm />
         <SuccessMessage />

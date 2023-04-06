@@ -21,7 +21,7 @@ const UsersList: React.FC = () => {
   return (
     <>
       {data?.users?.length !== 0 && (
-        <>
+        <div className={s.usersListWrapper}>
           <ul className={s.usersList}>
             {data?.users?.map(user => {
               return (
@@ -41,7 +41,7 @@ const UsersList: React.FC = () => {
               Show more
             </button>
           ) : null}
-        </>
+        </div>
       )}
     </>
   );

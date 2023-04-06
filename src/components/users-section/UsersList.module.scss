@@ -1,12 +1,41 @@
 @import 'styles/sass/variables';
 @import 'styles/sass/mixins';
 
+.usersListWrapper {
+  margin: 50px auto 0;
+
+  @media only screen and (min-width: $bp-small) {
+    max-width: 328px;
+  }
+
+  @media only screen and (min-width: $bp-medium) {
+    max-width: 704px;
+  }
+
+  @media only screen and (min-width: $bp-large) {
+    max-width: 904px;
+  }
+
+  @media only screen and (min-width: $bp-largest) {
+    max-width: 100%;
+  }
+}
+
 .usersList {
-  margin-top: 50px;
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
   gap: 20px;
+
+  @media only screen and (min-width: $bp-medium) {
+    gap: 16px;
+  }
+
+  @media only screen and (min-width: $bp-large) {
+    gap: 29px;
+  }
+
+  @media only screen and (min-width: $bp-largest) {
+  }
 }
 
 .users__button {

@@ -33,3 +33,8 @@ export interface IUsersRespond {
   links?: { next_url: string | null; prev_url: string | null };
   users?: IUser[];
 }
+
+export interface ITokenRespond {
+  success: boolean;
+  token: string;
+}

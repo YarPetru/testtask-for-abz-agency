@@ -14,34 +14,34 @@ const initialValues = {
   photo: null,
 };
 
+const emailRegEx =
+  /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
+
+const phoneRegEx = /^[\+]{0,1}380([0-9]{9})$/;
+
+// /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\ x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
+
 const validationSchema = yup.object().shape({
   name: yup
     .string()
-    .email('Enter a valid email')
-    .matches(
-      /^([a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]{2,})+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
-      'The Email field can only contain Latin letters, numbers and signs, and at least 2 charachters before "@"'
-    )
-    .required('Email is a required field'),
+    .min(2, 'Name is too short - should be 2 chars minimum')
+    .max(60, 'Name is too long - no more than 60 chars')
+    .required('Name is a required field'),
   email: yup
     .string()
-    .matches(/^[a-zA-Z0-9]/, 'Password must start with letter or number')
-    .matches(
-      /^([a-zA-Z0-9@.!#$%&’*+/=?^_`{|}~-])*$/,
-      'Password must not contain spaces'
-    )
-    .min(6, 'Email is too short - should be 6 chars minimum')
-    .max(30, 'Email must contain no more than 30 characters')
+    .min(2, 'Email is too short - should be 2 chars minimum')
+    .max(100, 'Email is too long - no more than 60 chars')
+    .email('Enter a valid email')
+    .matches(emailRegEx, 'Email must be a valid according to RFC2822')
     .required('Email is a required field'),
   phone: yup
     .string()
-    .oneOf([yup.ref('password')], 'Passwords do not match')
-    .required('Phone confirmation is a required field'),
+    .matches(phoneRegEx, 'Phone should be 13 chars and start with +380')
+    .required('Phone is a required field'),
+  position: yup.number().integer().min(1).required('Choose the position'),
 });
 
 const RegisterForm: React.FC = () => {
-  // const photoRef = useRef<HTMLInputElement>(null);
-
   const { data, isLoading, isSuccess, isFetching, isError, error } =
     useGetPositionsQuery();
 
@@ -60,15 +60,18 @@ const RegisterForm: React.FC = () => {
   } else if (isSuccess) {
     renderedPositions = data.positions?.map(position => {
       return (
-        <label key={position.id}>
-          <Field
-            className={s.defaultRadio}
-            type="radio"
-            name="position"
-            value={position.name}
-          />
-          {position.name}
-        </label>
+        <>
+          <label htmlFor={position.name} key={position.id}>
+            <Field
+              className={s.defaultRadio}
+              type="radio"
+              name="position"
+              value={String(position.id)}
+              id={position.name}
+            />
+            {position.name}
+          </label>
+        </>
       );
     });
   }
@@ -81,13 +84,13 @@ const RegisterForm: React.FC = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isValid, touched, setFieldValue }) => {
+        {({ isValid, touched, setFieldValue, errors }) => {
           return (
             <Form name="RegisterForm" className={s.form}>
               <div className={s.fieldsWrapper}>
                 <Field
                   className={
-                    (!touched && !isValid) || (touched && isValid)
+                    (!touched && errors.name) || (touched && !errors.name)
                       ? `${s.field}`
                       : `${s.field} ${s.field__invalid}`
                   }
@@ -99,7 +102,9 @@ const RegisterForm: React.FC = () => {
                 />
                 <label
                   className={
-                    isValid ? `${s.label}` : `${s.label} ${s.label__invalid}`
+                    !errors.name
+                      ? `${s.label}`
+                      : `${s.label} ${s.label__invalid}`
                   }
                   htmlFor="name"
                 >
@@ -115,7 +120,7 @@ const RegisterForm: React.FC = () => {
               <div className={s.fieldsWrapper}>
                 <Field
                   className={
-                    (!touched && !isValid) || (touched && isValid)
+                    (!touched && errors.email) || (touched && !errors.email)
                       ? `${s.field}`
                       : `${s.field} ${s.field__invalid}`
                   }
@@ -127,7 +132,9 @@ const RegisterForm: React.FC = () => {
                 />
                 <label
                   className={
-                    isValid ? `${s.label}` : `${s.label} ${s.label__invalid}`
+                    !errors.email
+                      ? `${s.label}`
+                      : `${s.label} ${s.label__invalid}`
                   }
                   htmlFor="email"
                 >
@@ -143,7 +150,7 @@ const RegisterForm: React.FC = () => {
               <div className={s.fieldsWrapper}>
                 <Field
                   className={
-                    (!touched && !isValid) || (touched && isValid)
+                    (!touched && errors.phone) || (touched && !errors.phone)
                       ? `${s.field}`
                       : `${s.field} ${s.field__invalid}`
                   }
@@ -155,7 +162,9 @@ const RegisterForm: React.FC = () => {
                 />
                 <label
                   className={
-                    isValid ? `${s.label}` : `${s.label} ${s.label__invalid}`
+                    !errors.phone
+                      ? `${s.label}`
+                      : `${s.label} ${s.label__invalid}`
                   }
                   htmlFor="phone"
                 >
@@ -194,13 +203,10 @@ const RegisterForm: React.FC = () => {
                   id="photo"
                   type="file"
                   accept="image/*"
-                  // placeholder="Upload your photo"
                   autoComplete="off"
-                  // onChange={formik.handleChange}
                   onChange={(e: any) => {
                     setFieldValue('photo', e.target.files[0]);
                   }}
-                  // ref={photoRef}
                   hidden
                 />
                 <label className={s.customFileLoader} htmlFor="photo">
@@ -210,13 +216,6 @@ const RegisterForm: React.FC = () => {
                   </div>
                 </label>
 
-                {/* <button
-                  onClick={() => {
-                    photoRef.current?.click();
-                  }}
-                >
-                  Upload
-                </button> */}
                 <ErrorMessage
                   name="photo"
                   component="div"
