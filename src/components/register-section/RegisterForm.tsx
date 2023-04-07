@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, ErrorMessage, Field } from 'formik';
 import * as yup from 'yup';
 
@@ -14,14 +14,34 @@ const initialValues = {
   photo: null,
 };
 
+const MAX_PHOTO_SIZE = 5242880;
+
 const emailRegEx =
   /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
 const phoneRegEx = /^[\+]{0,1}380([0-9]{9})$/;
 
-// /^(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\ x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])$/;
+// const validFileExtensions = { image: ['jpg', 'jpeg'] };
 
-const validationSchema = yup.object().shape({
+// const isValidFileType = (fileName: string, fileType: string) => {
+//   return (
+//     fileName &&
+//     validFileExtensions[fileType as keyof { image: ['jpg', 'jpeg'] }].indexOf(
+//       fileName.split('.').pop()!
+//     ) > -1
+//   );
+// };
+
+interface IForm {
+  name?: string;
+  email?: string;
+  phone?: string;
+  position?: number;
+  photo?: File;
+}
+// const validationSchema: yup.Schema<IForm> = yup.object().shape({
+
+const validationSchema: yup.Schema<IForm> = yup.object().shape({
   name: yup
     .string()
     .min(2, 'Name is too short - should be 2 chars minimum')
@@ -39,11 +59,23 @@ const validationSchema = yup.object().shape({
     .matches(phoneRegEx, 'Phone should be 13 chars and start with +380')
     .required('Phone is a required field'),
   position: yup.number().integer().min(1).required('Choose the position'),
+  photo: yup
+    .mixed<File>()
+    // .test('is-valid-type', 'Not a valid image type', value =>
+    //   isValidFileType(value && value.name.toLowerCase(), 'image')
+    // )
+    .test(
+      'is-valid-size',
+      'Max allowed size is 5MB',
+      value => value && value.size <= MAX_PHOTO_SIZE
+    ),
 });
 
 const RegisterForm: React.FC = () => {
   const { data, isLoading, isSuccess, isFetching, isError, error } =
     useGetPositionsQuery();
+
+  const [uploadedFileName, setUploadedFileName] = useState<string>('');
 
   const handleSubmit = (values: any, actions: any) => {
     console.log(values);
@@ -60,18 +92,16 @@ const RegisterForm: React.FC = () => {
   } else if (isSuccess) {
     renderedPositions = data.positions?.map(position => {
       return (
-        <>
-          <label htmlFor={position.name} key={position.id}>
-            <Field
-              className={s.defaultRadio}
-              type="radio"
-              name="position"
-              value={String(position.id)}
-              id={position.name}
-            />
-            {position.name}
-          </label>
-        </>
+        <label htmlFor={position.name} key={position.id}>
+          <Field
+            className={s.defaultRadio}
+            type="radio"
+            name="position"
+            value={String(position.id)}
+            id={position.name}
+          />
+          {position.name}
+        </label>
       );
     });
   }
@@ -84,7 +114,7 @@ const RegisterForm: React.FC = () => {
         validationSchema={validationSchema}
         onSubmit={handleSubmit}
       >
-        {({ isValid, touched, setFieldValue, errors }) => {
+        {({ isValid, touched, setFieldValue, errors, values }) => {
           return (
             <Form name="RegisterForm" className={s.form}>
               <div className={s.fieldsWrapper}>
@@ -202,17 +232,21 @@ const RegisterForm: React.FC = () => {
                   className={s.field}
                   id="photo"
                   type="file"
-                  accept="image/*"
-                  autoComplete="off"
-                  onChange={(e: any) => {
-                    setFieldValue('photo', e.target.files[0]);
+                  accept="image/jpeg, image/jpg"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                    if (e.target.files) {
+                      setFieldValue('photo', e.target.files[0]);
+                      setUploadedFileName(e.target.files[0].name);
+                    }
                   }}
                   hidden
                 />
                 <label className={s.customFileLoader} htmlFor="photo">
                   <div className={s.customFileLoader__fakeBtn}>Upload</div>
                   <div className={s.customFileLoader__fakePlaceholder}>
-                    Upload your photo
+                    {!!values.photo
+                      ? `Photo "${uploadedFileName.slice(0, 7)}..." uploaded`
+                      : 'Upload your photo'}
                   </div>
                 </label>
 

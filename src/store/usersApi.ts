@@ -6,18 +6,17 @@ const BASE_URL = 'https://frontend-test-assignment-api.abz.agency/api/v1/';
 
 export const usersApi = createApi({
   reducerPath: 'usersApi',
-  refetchOnFocus: false,
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: (headers, { getState }) => {
-      const data = (getState() as RootState).usersApi.queries.getToken
-        ?.data as ITokenRespond;
+    // prepareHeaders: (headers, { getState }) => {
+    //   const data = (getState() as RootState).usersApi.queries.getToken
+    //     ?.data as ITokenRespond;
 
-      if (data.token) {
-        headers.set('Authorization', `Bearer ${data.token}`);
-      }
-      return headers;
-    },
+    //   if (data.token) {
+    //     headers.set('Authorization', `Bearer ${data.token}`);
+    //   }
+    //   return headers;
+    // },
   }),
   tagTypes: ['users', 'positions', 'token'],
   endpoints: builder => ({
@@ -44,7 +43,7 @@ export const usersApi = createApi({
       forceRefetch({ currentArg, previousArg }) {
         return currentArg !== previousArg;
       },
-      // providesTags: ['users'],
+      providesTags: ['users'],
     }),
     getToken: builder.query<ITokenRespond, void>({
       query: () => ({
